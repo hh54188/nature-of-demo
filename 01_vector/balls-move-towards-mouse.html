@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>球球都移向鼠标</title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		
+		var canvasWidth = 800;
+		var canvasHeight = 600;
+		var ellipseRadius= 10;
+
+		function Mover() {
+			this.startPoint = new Victor(
+								math.randomInt(0, canvasWidth), 
+								math.randomInt(0, canvasHeight)
+							);
+			this.velocity = null;
+		}
+
+		Mover.prototype.setTargetLocation = function(targetLocation) {
+			var distanceVector = targetLocation.sub(this.startPoint);
+			this.velocity = distanceVector
+							.normalize() // 决定速度方向
+							.clone()
+							.multi(math.random(0, 1)); // 决定速度大小 
+		};
+
+		Mover.prototype.update = function () {
+			if (!this.velocity) {
+				return;
+			}
+			this.startPoint = this.startPoint.add(this.velocity);
+		}
+
+
+		var movers = [];
+		for (var i = 0; i < 10; i++) {
+			movers.push(new Mover());
+		}
+	
+
+		function setup () {
+			createCanvas(canvasWidth, canvasHeight);
+			background(153);
+			for (var i = 0; i < movers.length; i++) {
+				ellipse(
+						movers[i].startPoint.x, 
+						movers[i].startPoint.y, 
+						ellipseRadius, ellipseRadius
+					);				
+			}
+		}
+
+		function draw () {
+			for (var i = 0; i < movers.length; i++) {
+				movers[i].update();
+				ellipse(
+						movers[i].startPoint.x, 
+						movers[i].startPoint.y, 
+						ellipseRadius, ellipseRadius
+					);				
+			}
+		}
+
+		function mouseClicked() {
+			var targetLocation = new Victor(mouseX, mouseY);
+			for (var i = 0; i < movers.length; i++) {
+				movers[i].setTargetLocation(targetLocation);
+			}
+		}
+
+	</script>
+</body>
+</html>

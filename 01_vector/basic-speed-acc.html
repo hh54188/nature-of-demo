@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>基本加速度</title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+
+		var canvasWidth = 800;
+		var canvasHeight = 600;
+		var ellipseRadius= 10;
+
+		var startPoint = new Victor(math.randomInt(0, canvasWidth), math.randomInt(0, canvasHeight));
+		var velocity = new Victor(0.5, 0.5); // 速度
+		var acceleration = new Victor(0.01, 0.01); // 加速度
+
+		function setup () {
+			createCanvas(canvasWidth, canvasHeight);
+			background(153);
+		}
+
+		function draw () {
+			velocity.add(acceleration);
+			startPoint.add(velocity);
+			velocity.limit(5, 0.1); // 方向速度不超过5，一旦x或y超过5, 乘以0.1，降为 0.5，另一个值不变
+
+			console.log(velocity.toString());
+
+			if (startPoint.x < 0 || startPoint.x > canvasWidth) {
+				acceleration.x = acceleration.x * (-1); // 撞墙逆转方向后，速度和加速度都要逆转方向
+				velocity.x = velocity.x * (-1);
+			}
+
+			if (startPoint.y < 0 || startPoint.y > canvasHeight) {
+				acceleration.y = acceleration.y * (-1);
+				velocity.y = velocity.y * (-1);
+			}
+
+			ellipse(startPoint.x, startPoint.y, ellipseRadius, ellipseRadius);
+		}
+
+	</script>
+</body>
+</html>

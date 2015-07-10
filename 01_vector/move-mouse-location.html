@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>基本速度</title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+	
+		var canvasWidth = 800;
+		var canvasHeight = 600;
+		var ellipseRadius= 10;
+
+		var startPoint = new Victor(math.randomInt(0, canvasWidth), math.randomInt(0, canvasHeight));
+		var velocity = null;
+		var distanceVector = null;
+		var targetLocation = null;
+
+		function setup () {
+			createCanvas(canvasWidth, canvasHeight);
+			background(153);
+			ellipse(startPoint.x, startPoint.y, ellipseRadius, ellipseRadius);
+		}
+
+		function draw () {
+			if (velocity != null) {
+				startPoint.add(velocity);
+				ellipse(startPoint.x, startPoint.y, ellipseRadius, ellipseRadius);
+			}
+		}
+
+		function mouseClicked() {
+			targetLocation = new Victor(mouseX, mouseY);
+			distanceVector = targetLocation.clone().subtract(startPoint);
+			velocity = distanceVector.normalize().clone();
+		}
+
+	</script>
+</body>
+</html>
