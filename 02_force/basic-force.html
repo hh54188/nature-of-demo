@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+	var canvasWidth = 800;
+	var canvasHeight = 600;
+	var ellipseRadius= 20;
+
+	function Mover() {
+		this.startPoint = new Victor(
+							math.randomInt(0, 10), 
+							math.randomInt(0, canvasHeight)
+						);
+		this.velocity = new Victor(0, 0);
+		this.acceleration = new Victor(0, 0);
+		this.mass = math.random(10, 100);
+	}
+
+	Mover.prototype.applyForce = function (force) {
+		this.acceleration.add(force.div(this.mass));
+	}
+
+	Mover.prototype.update = function () {
+		this.velocity.add(this.acceleration);
+		this.startPoint.add(this.velocity);
+	}
+
+	var mover = new Mover();
+
+	function setup () {
+		createCanvas(canvasWidth, canvasHeight);
+		background(153);
+		ellipse(
+				mover.startPoint.x, 
+				mover.startPoint.y, 
+				ellipseRadius, ellipseRadius
+			);
+
+		var force = new Victor(math.randomInt(1, 10), 0);
+		mover.applyForce(force);			
+	}
+
+	function draw () {
+		mover.update();
+		ellipse(
+				mover.startPoint.x, 
+				mover.startPoint.y, 
+				ellipseRadius, ellipseRadius
+			);		
+	}
+</script>
+</body>
+</html>

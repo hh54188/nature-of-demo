@@ -32,8 +32,8 @@ if (!Victor) {
 		return this.clone().subtract(target);
 	};
 
-	proto.limit = function () {
-		
+	proto.limit = function (targetLength) {
+		// this.length()
 	}
 
 })(Victor.prototype);
