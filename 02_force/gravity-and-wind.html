@@ -29,6 +29,7 @@
 
 	Mover.prototype.update = function () {
 		this.velocity.add(this.acceleration);
+
 		this.startPoint.add(this.velocity);
 		this.acceleration.multi(0);
 	}
@@ -36,15 +37,26 @@
 	Mover.prototype.checkEdges = function() {
 		if (this.startPoint.x > canvasWidth) {
 			this.startPoint.x = canvasWidth
+			/*
+				反弹的时候不同时改变加速度方向？
+				因为加速度方向是由力的方向决定的
+				而重力始终向下，风始终往右吹
+				所以不用改变加速度方向
+			 */
 			this.velocity.x *= -1;
 		} else if ( this.startPoint.x < 0) {
 			this.velocity.x *= -1;
 			this.startPoint.x = 0;
 		}
+
 		if (this.startPoint.y > canvasHeight) {
 			this.velocity.y *= -1;
 			this.startPoint.y = canvasHeight;
-		}
+		} 
+		/*
+			为什么这里不继续考虑y小于0的情况？
+			因为在重力的作用下，小球**永远都不可能**触到顶部
+		 */
 	}
 
 	var mover = new Mover();
@@ -63,7 +75,11 @@
 		
 		var windForce = new Victor(0.01, 0);
 		var gravityForce = new Victor(0, 0.1);
-
+		/*
+			力不一定要在每一帧中添加（当然这样也有它的合理性）
+			如果在每一帧中添加，则需要在update的方法中把每一帧加速度清零
+			因为加速度不会累加
+		 */
 		mover.applyForce(windForce);		
 		mover.applyForce(gravityForce);	
 
