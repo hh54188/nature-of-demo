@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+	var canvasWidth = 800;
+	var canvasHeight = 600;
+	var ellipseRadius= 20;
+
+	function Mover(x, y) {
+		this.startPoint = new Victor(x, y);
+		this.velocity = new Victor(0, 0);
+		this.acceleration = new Victor(0, 0);
+		this.mass = 10;
+	}
+
+	Mover.prototype.applyForce = function (force) {
+		this.acceleration.add(force.clone().div(this.mass));
+
+	}
+
+	Mover.prototype.update = function () {
+		this.velocity.add(this.acceleration);
+		this.startPoint.add(this.velocity);
+		this.acceleration.multi(0);
+	}
+
+	var mover = new Mover(50, 50);
+	var moverWithoutFriction = new Mover(50, 200);
+
+	function setup () {
+		createCanvas(canvasWidth, canvasHeight);
+		background(153);
+		ellipse(
+				mover.startPoint.x, 
+				mover.startPoint.y, 
+				ellipseRadius, ellipseRadius
+			);
+
+		ellipse(
+			moverWithoutFriction.startPoint.x, 
+			moverWithoutFriction.startPoint.y, 
+			ellipseRadius, ellipseRadius
+		);
+			
+	}
+
+	function draw () {
+		var windForce = new Victor(0.1, 0);
+
+		mover.applyForce(windForce);
+		moverWithoutFriction.applyForce(windForce);
+
+		/*
+			如何计算摩擦力（模拟其他的力）：
+			1. 首先计算力的方向 速度 * (-1).normalize()
+			2. 再计算力的大小，normalForce * coefficient （压力x摩擦系数）
+			3. 力的方向 x 力的大小
+
+		 */
+		var frictionDirection = mover.velocity.clone()
+									.multi(-1)
+									.normalize();
+		var normalForce = 1;
+		var coefficient = 0.01;
+		var frictionLength = normalForce * coefficient;
+		mover.applyForce(frictionDirection.multi(frictionLength));
+
+		mover.update();
+		moverWithoutFriction.update();
+
+		ellipse(
+			mover.startPoint.x, 
+			mover.startPoint.y, 
+			ellipseRadius, ellipseRadius
+		);
+
+		ellipse(
+			moverWithoutFriction.startPoint.x, 
+			moverWithoutFriction.startPoint.y, 
+			ellipseRadius, ellipseRadius
+		);				
+	}
+</script>
+</body>
+</html>
