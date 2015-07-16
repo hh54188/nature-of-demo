@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>简谐振动</title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>	
+</head>
+<body>
+<script type="text/javascript">
+	var canvasWidth = 800;
+	var canvasHeight = 600;
+	var circleRadius = 10;
+
+	var amplitude = new Victor(math.random(0, canvasWidth / 2), math.random(0, canvasHeight / 2)); // 振幅
+	var angle = new Victor(0, 0);
+	var angleVelocity = new Victor(math.random(-0.05, 0.05), math.random(-0.05, 0.05));
+
+	function setup () {
+		createCanvas(canvasWidth, canvasHeight);
+		background(153);		
+	}
+
+	function draw () {
+		angle.add(angleVelocity);
+		translate(canvasWidth / 2, canvasHeight / 2);
+		var x = math.sin(angle.x) * amplitude.x;
+		var y = math.sin(angle.y) * amplitude.y;
+		ellipse(x, y, circleRadius, circleRadius);
+	}	
+
+</script>
+</body>
+</html>

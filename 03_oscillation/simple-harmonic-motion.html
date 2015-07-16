@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>简谐振动</title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>	
+</head>
+<body>
+<script type="text/javascript">
+	var canvasWidth = 800;
+	var canvasHeight = 600;
+	var circleRadius = 10;
+
+	var amplitude = 100; // 振幅
+	var period = 100; // 周期
+
+	function setup () {
+		createCanvas(canvasWidth, canvasHeight);
+		background(153);		
+	}
+
+	function draw () {
+		translate(canvasWidth / 2, canvasHeight / 2);
+
+		var x = amplitude * math.sin(TWO_PI * frameCount / period);
+		ellipse(x, 0, circleRadius, circleRadius);
+	}	
+
+</script>
+</body>
+</html>

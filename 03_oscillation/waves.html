@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>大波浪</title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>	
+</head>
+<body>
+<script type="text/javascript">
+	var canvasWidth = 800;
+	var canvasHeight = 600;
+	var circleRadius = 10;
+
+	var amplitude = 100;
+	var angle = 0;
+	var angleVelocity = 0.3;
+
+	function setup () {
+		createCanvas(canvasWidth, canvasHeight);
+		background(153);	
+
+		translate(0, canvasHeight / 2);
+
+		for ( var x = 0; x <= canvasWidth; x += 12) {
+			angle += angleVelocity;
+			var y = math.sin(angle) * amplitude;
+			ellipse(x, y, circleRadius, circleRadius);
+		}			
+	}
+
+	function draw () {
+		// background(153);		
+		// translate(canvasWidth / 2, canvasHeight / 2);
+
+		// for ( var x = 0; x <= canvasWidth; x += 24) {
+		// 	angle += angleVelocity;
+		// 	var y = math.sin(angle) * amplitude;
+		// 	ellipse(x, y, circleRadius, circleRadius);
+		// }
+	}	
+
+</script>
+</body>
+</html>

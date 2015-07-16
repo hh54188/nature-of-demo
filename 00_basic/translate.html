@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>translate的用法</title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		
+		var canvasWidth = 800;
+		var canvasHeight = 600;
+		var ellipseRadius= 10;	
+
+		function setup () {
+			createCanvas(canvasWidth, canvasHeight);
+			background('gray');
+			fill('white');
+			translate(canvasWidth / 2, canvasHeight / 2);
+			rect(0, 0, 200, 200);
+		}
+
+		function draw () {
+			ellipse(0, 0, 20, 20);
+		}
+
+	</script>
+</body>
+</html>

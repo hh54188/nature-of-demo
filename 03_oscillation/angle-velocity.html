@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+	var canvasWidth = 800;
+	var canvasHeight = 600;
+	var ellipseRadius= 20;
+
+	var angle = 0;
+	var angleVelocity = 0;
+	var angleAcceleration = 0.001
+
+	function setup () {
+		createCanvas(canvasWidth, canvasHeight);
+	}
+
+	function draw () {
+		/*
+			The background() function sets the color used for the background of the p5.js canvas. 
+			This function is typically used within draw() **to clear the display window at the beginning of each frame**, 
+			but it can be used inside setup() **to set the background on the first frame of animation** or if the background need only be set once.
+		 */
+
+		background(153);		
+		fill(175); // used to fill shapes
+		stroke(0); // Sets the color used to draw lines and borders around shapes.
+		
+		/*
+		 rectMode(CENTER) interprets the **first two parameters** of rect() as the **shape's center point,**
+		 while the third and fourth parameters are its width and height. 
+		 */
+		
+		rectMode(CENTER);
+		translate(canvasWidth/2, canvasHeight/2);
+		rotate(angle); // Rotates a shape the amount specified by the angle parameter.
+
+		line(-50, 0, 50, 0);
+		// ellipse( 50, 0, 8, 8);
+		// ellipse(-50, 0, 8, 8);
+
+		angleVelocity += angleAcceleration;
+		angle += angleVelocity;
+	}
+</script>
+</body>
+</html>
