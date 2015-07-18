@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pendulum</title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>	
+</head>
+<body>
+<script type="text/javascript">
+	var canvasWidth = 800;
+	var canvasHeight = 600;
+
+	var gravity = 0.004;
+
+	var ellipseRadius = 20;
+	function Pendulum () {
+		this.length = 100;
+		this.location = new Victor(0, 0);
+		this.angle = PI / 4;
+		this.angleVelocity = 0;
+		this.angleAcceleration = 0;
+	}
+
+	Pendulum.prototype.update = function () {
+		/*
+			非常重要：
+			计算*角速度*和*角速度加速度*
+		 */ 
+		this.angleAcceleration = gravity * math.sin(this.angle);
+		this.angleVelocity += this.angleAcceleration;
+		this.angle += this.angleVelocity;
+
+		this.location = new Victor(
+							this.length * math.sin(this.angle), 
+							this.length * math.cos(this.angle)
+						);
+	}
+
+	var p;
+
+	function setup () {
+
+		p = new Pendulum();
+
+		createCanvas(canvasWidth, canvasHeight);
+		background(153);	
+
+		translate(canvasWidth / 2, canvasHeight / 2);
+		ellipse(0, 0, ellipseRadius, ellipseRadius);
+	}
+
+	function draw () {
+		p.update();
+
+		stroke('black');
+		
+		line(0, 0, p.location.x, p.location.y);
+		ellipse(p.location.x, p.location.y, ellipseRadius, ellipseRadius);
+	}	
+
+</script>
+</body>
+</html>
