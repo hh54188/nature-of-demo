@@ -28,8 +28,12 @@
 		/*
 			非常重要：
 			计算*角速度*和*角速度加速度*
+
+			请注意：
+			*角度*在这里不是*度数*
 		 */ 
-		this.angleAcceleration = gravity * math.sin(this.angle);
+		// gravity *= 0.00099; // 减弱重力
+		this.angleAcceleration = gravity * math.sin(this.angle) * (-1); // 为什么要乘以-1？
 		this.angleVelocity += this.angleAcceleration;
 		this.angle += this.angleVelocity;
 
@@ -54,7 +58,8 @@
 
 	function draw () {
 		p.update();
-
+		
+		background(153)
 		stroke('black');
 		
 		line(0, 0, p.location.x, p.location.y);
