@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Single Particle</title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>	
+</head>
+<body>
+<script type="text/javascript">
+	var canvasWidth = 800;
+	var canvasHeight = 600;
+	var ellipseRadius= 10;
+
+	/*
+		Mover Class:
+	 */
+	function Mover(loc) {
+		this.location = loc.clone();
+		// 要造成一种喷射的效果（粒子呈抛物线），
+		// y速度一定要是负值（y速度向上）,x速度无所谓
+		this.velocity = new Victor(math.random(0, 0.8), math.random(-1, -3));
+		this.acceleration = new Victor(math.random(-0.05, 0.05), math.random(0.05, 0.1));
+		this.lifeSpan = 1;
+	}
+
+	Mover.prototype.update = function () {
+		this.velocity.add(this.acceleration);
+		this.location.add(this.velocity);
+		this.lifeSpan -= 0.01;
+	}
+
+	Mover.prototype.isDead = function () {
+		if (this.lifeSpan <= 0) {
+			return true;
+		}
+		return false;
+	}
+
+	/*
+		MoverList Class:
+	 */
+	function MoverList (loc) {
+		this.list = [];
+		this.location = loc.clone();
+	}
+
+	MoverList.prototype.update = function () {
+
+		this.list.push(new Mover(this.location));
+
+		for (var i = 0; i < this.list.length; i++) {
+			var mover = this.list[i];
+			mover.update();
+			if (!mover.isDead()) {
+				fill('rgba(0, 0, 0, ' + mover.lifeSpan + ')');
+				// 注意 ellipse 函数只有在draw作用域才有用
+				ellipse(mover.location.x, mover.location.y, ellipseRadius, ellipseRadius);
+			}
+			else {
+				this.list.splice(i, 1);
+				i--; 
+				// 注意，每移除一个后，需要将计数器减一
+				// 至于为什么自己领悟
+			}
+		}
+	}
+
+	/*
+		ParticleSystem Class
+	 */
+	function ParticleSystem () {
+		this.system = [];
+	}
+
+	ParticleSystem.prototype.update = function () {
+		for (var i = 0;i < this.system.length; i++) {
+			var moverList = this.system[i];
+			moverList.update();
+		}
+	}
+
+	ParticleSystem.prototype.add = function (loc) {
+		this.system.push(new MoverList(loc.clone()));
+	}
+
+	var ps = new ParticleSystem();
+
+	function setup () {
+		createCanvas(canvasWidth, canvasHeight);
+		background(175);
+		// translate(canvasWidth / 2, canvasHeight / 2);
+	}
+
+
+	function draw () {
+		background(175);
+		noStroke();
+		ps.update();
+	}
+
+	function mouseClicked() {
+		targetLocation = new Victor(mouseX, mouseY);
+		ps.add(targetLocation);
+	}
+</script>
+</body>
+</html>

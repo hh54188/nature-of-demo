@@ -7,4 +7,4 @@ var app = express();
 app.use('/', serveIndex(__dirname));
 app.use(serveStatic(__dirname));
 
-app.listen(80);
+app.listen(8000);
