@@ -18,17 +18,44 @@
 		function setup () {
 			createCanvas(canvasWidth, canvasHeight);
 			background('gray');
-			// radians = 2 * PI * (degrees / 360)
-			// Default using radians
-			rotate(20);
 
-			fill('white');
-			rect(0, 0, 200, 200);
+			translate(canvasWidth / 2, canvasHeight / 2);
+			rectMode(CENTER);
+
+			ellipse(-200, -200, 50, 50);
+
+			fill('orange');
+			rect(0, 0, 100, 10);
+			fill('black');			
+			rect(50, 0, 10, 10);
 		}
 
 		function draw () {
-			rotate(-20);
-			rect(100, 0, 200, 200);
+
+		}
+
+		// function mouseClicked () {
+		function mouseMoved () {
+			// 为什么是错的：
+			// var angle = atan2(mouseY, mouseX);
+			
+			// 为什么要像下面这样相减：？
+			var transformY = mouseY - canvasHeight / 2;
+			var transformX = mouseX - canvasWidth / 2;
+			var angle = atan2(transformY, transformX);
+			background('gray');
+
+			ellipse(-200, -200, 50, 50);
+
+			// push();
+
+			rotate(angle);
+			fill('orange');
+			rect(0, 0, 100, 10);
+			fill('black');			
+			rect(50, 0, 10, 10);
+
+			// pop();
 		}
 
 	</script>
