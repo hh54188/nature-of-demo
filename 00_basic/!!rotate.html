@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>		
+</head>
+<body>
+	<script type="text/javascript">
+		var canvasWidth = 800;
+		var canvasHeight = 600;
+		var ellipseRadius= 10;
+
+		var offsetX = canvasWidth / 2;
+		var offsetY = canvasHeight / 2;
+
+		function setup () {
+			createCanvas(canvasWidth, canvasHeight);
+			background(175);
+
+			translate(offsetX, offsetY);
+			
+			rectMode(CENTER);
+
+			fill('red');
+			rect(0 - canvasWidth / 2 + 50, 0 - canvasHeight / 2 + 50, 10, 50);
+
+			fill('orange');
+			rect(0, 0, 200, 10);
+			fill('black');
+			rect(100, 0, 10, 10);
+		}
+
+		function draw () {
+
+		}	
+
+		function mouseMoved () {
+			// 理解push/pop非常重要！
+			push();
+			
+			// 思考，为什么要减去offset？非常重要
+			var angle = math.atan2(
+				mouseY - offsetY, 
+				mouseX - offsetX
+			);
+			rotate(angle);
+			background(175)
+			fill('orange');
+			rect(0, 0, 200, 10);
+			fill('black');
+			rect(100, 0, 10, 10);
+
+			// 每一次pop()，都把旋转的基点还原为水平线，非常重要
+			pop();
+			fill('red');
+			rect(0 - canvasWidth / 2 + 50, 0 - canvasHeight / 2 + 50, 10, 50);			
+
+		}
+	</script>
+</body>
+</html>

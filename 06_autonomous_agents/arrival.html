@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>		
+</head>
+<body>
+	<script type="text/javascript">
+		var canvasWidth = 800;
+		var canvasHeight = 600;
+
+		var ellipseRadius= 10;
+		var arrivalZoneRadius = 300;
+
+		var vehicleStartLocation = new Victor(200, 200);
+		var vehicleStartVelocity = new Victor(1, 3); 
+		/*
+			maxSpeed: 期望追赶的最大速度
+			最大时，即当前位置至目标位置的距离，瞬间即到达
+		*/
+		var maxSpeed = 5; 
+
+		var targetStartLocation = new Victor(canvasWidth - 200, canvasHeight - 200);
+
+		function Vehicle () {
+			this.location = vehicleStartLocation.clone();
+			this.velocity = vehicleStartVelocity.clone();
+			this.acceleration = new Victor(0, 0);
+		}
+
+		Vehicle.prototype.update = function() {
+			// arrival算法开始
+			var path2Target = targetStartLocation.sub(this.location);
+			var pathDistance = path2Target.length();
+			var desireDirection = path2Target.normalize();
+			
+			// desireVelocity非常重要！
+			if (pathDistance < arrivalZoneRadius) {
+				var desireVelocity = desireDirection.multi(maxSpeed).multi(pathDistance / arrivalZoneRadius);
+			} else {
+				var desireVelocity = desireDirection.multi(maxSpeed);
+			}
+			this.acceleration = desireVelocity.sub(this.velocity);
+			// arrival算法结束
+
+			this.velocity.add(this.acceleration);
+			this.location.add(this.velocity);
+
+		}
+
+		Vehicle.prototype.applyForce = function (force) {
+			this.acceleration = force;
+		}
+
+		var vehicle = new Vehicle();
+
+		function setup () {
+			createCanvas(canvasWidth, canvasHeight);
+			background(175);
+
+			// Arrival Zone:
+			fill('yellow');
+			ellipse(targetStartLocation.x,  targetStartLocation.y, arrivalZoneRadius, arrivalZoneRadius);
+
+			// Target Location:
+			fill('orange');
+			ellipse(targetStartLocation.x,  targetStartLocation.y, ellipseRadius * 2, ellipseRadius * 2);
+			
+			fill('white');
+			ellipse(vehicleStartLocation.x, vehicleStartLocation.y, ellipseRadius, ellipseRadius);
+		}
+
+		function draw () {
+			background(175);
+
+			// Arrival Zone:
+			fill('yellow');
+			ellipse(targetStartLocation.x,  targetStartLocation.y, arrivalZoneRadius, arrivalZoneRadius);			
+
+			fill('orange');
+			ellipse(targetStartLocation.x,  targetStartLocation.y, ellipseRadius * 2, ellipseRadius * 2);
+
+			vehicle.update();
+
+			fill('white');
+			ellipse(vehicle.location.x, vehicle.location.y, ellipseRadius, ellipseRadius);
+		}			
+
+		function mouseMoved() {
+			return; // temp
+
+			if (mouseX > canvasWidth ) {
+				targetStartLocation.x = canvasWidth;
+			} else if (mouseX < 0) {
+				targetStartLocation.x = 0;
+			} else {
+				targetStartLocation.x = mouseX;
+			}
+
+			if (mouseY > canvasHeight) {
+				targetStartLocation.y = canvasHeight;
+			} else if (mouseY < 0) {
+				targetStartLocation.y = 0;
+			} else {
+				targetStartLocation.y = mouseY;
+			}
+		}
+	</script>
+</body>
+</html>
