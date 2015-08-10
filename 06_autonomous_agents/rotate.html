@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>		
+</head>
+<body>
+	<script type="text/javascript">
+		var canvasWidth = 800;
+		var canvasHeight = 600;
+		var ellipseRadius= 10;
+
+		function justdoit () {
+			
+			rectMode(CENTER);
+			
+			fill('orange');	
+			rect(0, 0, 100, 10);
+
+			ellipse(-100, 0, 20, 20);
+		}
+
+		function setup () {
+			createCanvas(canvasWidth, canvasHeight);
+			background(175);
+
+			translate(canvasWidth / 2, canvasHeight / 2);
+			justdoit();
+		}
+
+		function draw () {
+
+		}	
+
+		function mouseClicked () {
+			push();
+
+			var angle = atan2(mouseY, mouseX);
+			rotate(0);
+			rotate(angle);
+			justdoit();
+
+			pop();
+			// var angle = atan2(mouseY - canvasHeight / 2, mouseX - canvasWidth / 2);
+			// background(175);
+			// rect(0, 0, 100, 10);
+		}
+	</script>
+</body>
+</html>
