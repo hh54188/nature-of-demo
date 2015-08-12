@@ -32,22 +32,8 @@ if (!Victor) {
 		return this.clone().subtract(target);
 	};
 
-	proto.addWithLimit = function (targetVictor) {
-		var testVictor = this.clone().add(targetVictor);
-		if (this.limitLength) {
-			testVictor.length() <= this.limitLength;
-			this.add(targetVictor);
-			return this;
-		} 
-		// 不存在limit或者超出limit
-		else {
-			return this;
-		}
-	};
-
-	proto.limitWithLength = function (targetLength) {
-		this.limitLength = targetLength;
-		return false;
+	proto.ad = function (target) {
+		return this.clone().add(target);
 	}
 
 })(Victor.prototype);

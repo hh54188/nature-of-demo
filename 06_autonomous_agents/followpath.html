@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>		
+</head>
+<body>
+	<script type="text/javascript">
+		var canvasWidth = 800;
+		var canvasHeight = 600;
+
+		var ellipseRadius= 10;
+		var pathRadius = 80;
+
+		var vehicleStartLocation = new Victor(100, 100);
+		var vehicleStartVelocity = new Victor(3, -3); 
+
+		var pathArr = [new Victor(100, 200), new Victor(500, 500)];
+
+		function drawPath(pathArr) {
+			for (var i = 0; i < pathArr.length - 1; i++) {
+				var begin = pathArr[i];
+				var end = pathArr[i + 1];
+				
+				// 先画粗线
+				strokeWeight(pathRadius);				
+				stroke('blue');
+				line(begin.x, begin.y, end.x, end.y);
+
+				// 再画细线
+				strokeWeight(1);
+				stroke('white');
+				line(begin.x, begin.y, end.x, end.y);
+			}
+		}
+
+		function drawEllipse(vehicle) {
+			fill('white');
+			stroke('black');
+			ellipse(vehicle.location.x, vehicle.location.y, ellipseRadius, ellipseRadius);
+		}
+
+
+		function Vehicle () {
+			this.location = vehicleStartLocation.clone();
+			this.velocity = vehicleStartVelocity.clone();
+			this.acceleration = new Victor(0, 0);
+		}
+
+		Vehicle.prototype.update = function() {
+			this.velocity.add(this.acceleration);
+			this.location.add(this.velocity);
+
+			// Path follow begin:
+			var lineBeginPoint = pathArr[0];
+			var lineEndPoint = pathArr[1];
+			var line = lineEndPoint.sub(lineBeginPoint);
+			var normalizedLine = line.clone().normalize();
+
+			var predictLocation = this.location.clone().add(this.velocity.clone().multi(3));
+
+			var locationVector = predictLocation.sub(this.location);
+
+			// A dot B = |A| x |B| x cos(0)
+			var cosAngle = locationVector.dot(normalizedLine) / locationVector.length();
+			var angle = math.acos(cosAngle);
+
+			var normalPoint = 
+			normalizedLine.multi(locationVector.length() * math.cos(angle))
+			
+
+		}
+
+		var vehicle = new Vehicle();
+
+		function setup () {
+			createCanvas(canvasWidth, canvasHeight);
+			background(175);
+
+			drawPath(pathArr);
+			drawEllipse(vehicle);
+		}
+
+		function draw () {
+			vehicle.update();
+			drawEllipse(vehicle);
+		}			
+
+	</script>
+</body>
+</html>
