@@ -17,7 +17,7 @@
 		var pathRadius = 80;
 
 		var vehicleStartLocation = new Victor(100, 100);
-		var vehicleStartVelocity = new Victor(3, -3); 
+		var vehicleStartVelocity = new Victor(0.1,0); 
 
 		var pathArr = [new Victor(100, 200), new Victor(500, 500)];
 
@@ -52,27 +52,43 @@
 		}
 
 		Vehicle.prototype.update = function() {
-			this.velocity.add(this.acceleration);
-			this.location.add(this.velocity);
 
 			// Path follow begin:
-			var lineBeginPoint = pathArr[0];
-			var lineEndPoint = pathArr[1];
-			var line = lineEndPoint.sub(lineBeginPoint);
-			var normalizedLine = line.clone().normalize();
+			var projectLineBeginPoint = pathArr[0];
+			var projectLineEndPoint = pathArr[1];
+			var projectLine = projectLineEndPoint.sub(projectLineBeginPoint);
 
-			var predictLocation = this.location.clone().add(this.velocity.clone().multi(3));
+			var predictLocation = this.location.clone().add(this.velocity.clone().normalize().multi(10));
+			var line = predictLocation.sub(projectLineBeginPoint); // From the projection line begin to predict location
 
-			var locationVector = predictLocation.sub(this.location);
 
 			// A dot B = |A| x |B| x cos(0)
-			var cosAngle = locationVector.dot(normalizedLine) / locationVector.length();
+			var cosAngle = line.dot(projectLine.clone().normalize()) / (1 * line.length());
 			var angle = math.acos(cosAngle);
 
-			var normalPoint = 
-			normalizedLine.multi(locationVector.length() * math.cos(angle))
+			var projectionLength = line.length() * math.cos(angle);
+			var projectionPoint = projectLineBeginPoint.clone().add(projectLine.clone().normalize().multi(projectionLength));
 			
+			fill('orange');
+			ellipse(projectionPoint.x, projectionPoint.y, 10, 10);
+			
+			var distance = predictLocation.sub(projectionPoint).length();
+			// 如果点在路的外面，进行seek算法
+			if (distance > pathRadius) {
+				var targetPoint = projectionPoint.clone().add(projectLine.clone().normalize().multi(30));
+	
+				fill("blue");
+				ellipse(targetPoint.x, targetPoint.y, 10, 10);
 
+				var desireVelocity = targetPoint.sub(this.location).normalize().multi(1);
+				var desireForce = desireVelocity.sub(this.velocity);
+				this.acceleration = desireForce;
+			} else {
+				console.log("in");
+			}
+
+			this.velocity.add(this.acceleration);
+			this.location.add(this.velocity);
 		}
 
 		var vehicle = new Vehicle();
