@@ -54,37 +54,54 @@
 		Vehicle.prototype.update = function() {
 
 			// Path follow begin:
-			var projectLineBeginPoint = pathArr[0];
+			var projectLineBeginPoint = pathArr[0]; 
 			var projectLineEndPoint = pathArr[1];
-			var projectLine = projectLineEndPoint.sub(projectLineBeginPoint);
+			var projectLine = projectLineEndPoint.sub(projectLineBeginPoint); // ProjectLine即需要跟随的Path路线：向量A
 
-			var predictLocation = this.location.clone().add(this.velocity.clone().normalize().multi(10));
-			var line = predictLocation.sub(projectLineBeginPoint); // From the projection line begin to predict location
+			var predictLocation = this.location.clone().add(this.velocity.clone().normalize().multi(30)); // 预测物体即将达到的地点
+			var line2Predict = predictLocation.sub(projectLineBeginPoint); // 从“路径开始点”到“预测地点”的向量：向量B
 
 
 			// A dot B = |A| x |B| x cos(0)
-			var cosAngle = line.dot(projectLine.clone().normalize()) / (1 * line.length());
-			var angle = math.acos(cosAngle);
+			var cosAngle = line2Predict.dot(projectLine.clone().normalize()) / (1 * line2Predict.length()); // 根据“点积”计算出向量A与向量B夹角的cos值
+			var angle = math.acos(cosAngle); // 推算出夹角
 
-			var projectionLength = line.length() * math.cos(angle);
-			var projectionPoint = projectLineBeginPoint.clone().add(projectLine.clone().normalize().multi(projectionLength));
-			
-			fill('orange');
-			ellipse(projectionPoint.x, projectionPoint.y, 10, 10);
+			var projectionLength = line2Predict.length() * math.cos(angle); // 计算出向量B再向量A上投影的长度
+			var projectionPoint = projectLineBeginPoint.clone().add(projectLine.clone().normalize().multi(projectionLength)); // 计算出向量A在向量B上的投影点
+				
+			// 画出投影点
+			// fill('orange');
+			// stroke('black');						
+			// ellipse(projectionPoint.x, projectionPoint.y, 10, 10);
+
+			// 画出预测点
+			fill('blue');
+			stroke('black');
+			ellipse(predictLocation.x, predictLocation.y, 10, 10);			
+
+			// 画出投影线
+			// strokeWeight(1);
+			// stroke('rgb(' + math.randomInt(0, 255) + ', ' + math.randomInt(0, 255) + ', ' + math.randomInt(0, 255) + ')');			
+			// line(predictLocation.x, predictLocation.y, projectionPoint.x, projectionPoint.y); 
 			
 			var distance = predictLocation.sub(projectionPoint).length();
 			// 如果点在路的外面，进行seek算法
 			if (distance > pathRadius) {
+				// 开始seek算法，
+				// 找到seek的目标
 				var targetPoint = projectionPoint.clone().add(projectLine.clone().normalize().multi(30));
-	
-				fill("blue");
-				ellipse(targetPoint.x, targetPoint.y, 10, 10);
+				
+				// 绘制target
+				// fill("yellow");
+				// stroke('black');				
+				// ellipse(targetPoint.x, targetPoint.y, 10, 10);
 
 				var desireVelocity = targetPoint.sub(this.location).normalize().multi(1);
 				var desireForce = desireVelocity.sub(this.velocity);
 				this.acceleration = desireForce;
 			} else {
-				console.log("in");
+				// 距离判断有问题？
+				// console.log("in");
 			}
 
 			this.velocity.add(this.acceleration);

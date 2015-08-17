@@ -1,0 +1,62 @@
+<!--
+	追寻算法，非常重要，seeking behavior入门：
+	1. 理解desire velocity
+	2. 理解如何计算desire force
+	3. fleeing是相反的seeking
+-->
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>		
+</head>
+<body>
+	<script type="text/javascript">
+		var canvasWidth = 800;
+		var canvasHeight = 600;
+
+		var ellipseRadius= 10;
+
+		var vehicleStartLocation = new Victor(200, 200);
+		var vehicleStartVelocity = new Victor(1, 3); 
+
+		var targetStartLocation = new Victor(canvasWidth - 200, canvasHeight - 200);
+
+		function Vehicle () {
+			this.location = vehicleStartLocation.clone();
+			this.velocity = vehicleStartVelocity.clone();
+			this.acceleration = new Victor(0, 0);
+		}
+
+		Vehicle.prototype.update = function() {
+			this.velocity.add(this.acceleration);
+			this.location.add(this.velocity);
+
+		}
+
+		Vehicle.prototype.applyForce = function (force) {
+			this.acceleration = force;
+		}
+
+		var vehicle = new Vehicle();
+
+		function setup () {
+			createCanvas(canvasWidth, canvasHeight);
+			background(175);
+		}
+
+		function draw () {
+			background(175);
+			vehicle.update();
+		}			
+
+		function mouseMoved() {
+
+		}
+	</script>
+</body>
+</html>
