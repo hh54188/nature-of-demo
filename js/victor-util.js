@@ -23,6 +23,10 @@ if (!Victor) {
 		return this;
 	};
 
+	// proto.dist = function (v1, v2) {
+	// 	return v1.clone().subtract(v2.clone());
+	// }
+
 	/**
 	 * 两个矢量相减，原矢量不变，返回差为新值
 	 * @param  {[Object/Victor]} target [被减数]

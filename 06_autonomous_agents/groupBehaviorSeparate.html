@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/js/lib/p5.min.js"></script>
+	<script type="text/javascript" src="/js/lib/victor.js"></script>
+	<script type="text/javascript" src="/js/lib/math.js"></script>
+	
+	<script type="text/javascript" src="/js/victor-util.js"></script>		
+</head>
+<body>
+	<script type="text/javascript">
+		var canvasWidth = 800;
+		var canvasHeight = 600;
+
+		var ellipseRadius= 10;
+
+		var vehicleArr = [];
+		var vehicleCount = 300;
+
+		var maxSpeed = 1;
+		var safeDistance = 30;
+
+		function Vehicle (location) {
+			this.id = math.randomInt(0, 10e10);
+			this.location = location.clone();
+			this.velocity = new Victor(0, 0);
+			this.acceleration = new Victor(0, 0);
+		}
+
+		Vehicle.prototype.update = function() {
+			this.velocity.add(this.acceleration);
+			this.location.add(this.velocity);
+			if (this.location.x < 0 || this.location.x > canvasWidth) {
+				
+				if (this.location.x < 0) {
+					this.location.x = canvasWidth;
+				}
+
+				if (this.location.x > canvasWidth) {
+					this.location.x = 0;
+				}
+			}
+
+			if (this.location.y < 0 || this.location.y > canvasHeight) {
+				
+				if (this.location.y < 0) {
+					this.location.y = canvasHeight;
+				}
+
+				if (this.location.y > canvasHeight) {
+					this.location.y = 0;
+				}
+			}
+
+		}
+
+		Vehicle.prototype.applyForce = function (force) {
+			this.acceleration = force;
+		}
+
+		for (var i = 0; i < vehicleCount; i++) {
+			vehicleArr.push(
+				new Vehicle(
+					new Victor(
+						math.randomInt(0, canvasWidth), 
+						math.randomInt(0, canvasHeight)
+					)
+				)
+			);
+		}
+
+		function setup () {
+			frameRate(60);
+			createCanvas(canvasWidth, canvasHeight);
+			background(175);
+
+			for (var i = 0; i < vehicleCount; i++) {
+				ellipse(
+					vehicleArr[i].location.x, 
+					vehicleArr[i].location.y, 
+					ellipseRadius, 
+					ellipseRadius
+				);
+			}			
+		}
+
+		function singleSeparate(curVehicle) {
+
+			var sumVelocity = new Victor(0, 0);
+			var count = 0;
+
+			for (var j = 0; j < vehicleCount; j++) {
+				var compareVehicle = vehicleArr[j];
+				var toTargetVictor = compareVehicle.location.sub(curVehicle.location);
+
+				var toTargetDistance = toTargetVictor.length();
+				if (toTargetDistance > 0 && toTargetDistance < safeDistance) {
+					sumVelocity.add(toTargetVictor);
+					count++;
+				}			
+				
+			}
+
+			if (count) {
+				sumVelocity.div(count);
+				sumVelocity.normalize();
+				sumVelocity.multi(-1);
+				sumVelocity.multi(maxSpeed);	
+
+				curVehicle.velocity = sumVelocity;
+			}
+
+			curVehicle.update();
+		}
+
+		function draw () {
+			background(175);
+
+			for (var i = 0; i < vehicleCount; i++) {
+				singleSeparate(vehicleArr[i]);
+			}
+
+			for (var i = 0; i < vehicleCount; i++) {
+				var curVehicle = vehicleArr[i];
+				ellipse(
+					curVehicle.location.x,
+					curVehicle.location.y,
+					ellipseRadius,
+					ellipseRadius
+				);
+			}
+
+		}			
+	</script>
+</body>
+</html>
