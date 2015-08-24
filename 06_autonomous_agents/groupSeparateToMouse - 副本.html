@@ -9,26 +9,7 @@
 	<script type="text/javascript" src="/js/victor-util.js"></script>		
 </head>
 <body>
-	<div sytle="position:fixed;left:0;top:0;">
-		<p>安全距离:<span id="distanceLabel">30</span></p>
-		<input id="distanceController" type="range" value="30" step="1" min="0" max="100"/>
-		<p>maxSpeed:<span id="speedLabel">1</span></p>
-		<input id="speedController" type="range" value="1" step="0.1" min="0" max="10"/>
-	</div>
-
 	<script type="text/javascript">
-
-		document.querySelector("#speedController").oninput = function () {
-			maxSpeed = this.value;	
-			document.querySelector("#speedLabel").innerHTML = this.value;
-		}
-
-
-		document.querySelector("#distanceController").oninput = function () {
-			safeDistance = this.value;	
-			document.querySelector("#distanceLabel").innerHTML = this.value;
-		}
-
 		var canvasWidth = 800;
 		var canvasHeight = 600;
 
@@ -37,8 +18,11 @@
 		var vehicleArr = [];
 		var vehicleCount = 300;
 
-		var maxSpeed = 1;
-		var safeDistance = 30;
+		var maxSeparateSpeed = 2;
+		var maxSeekSpeed = 1;
+		var safeDistance = 50;
+
+		var mouseLocation = new Victor(0, 0);
 
 		function Vehicle (location) {
 			this.id = math.randomInt(0, 10e10);
@@ -74,6 +58,15 @@
 
 		}
 
+		Vehicle.prototype.applyForce = function (force) {
+			this.acceleration.add(force);
+			// this.acceleration = force;
+		}
+
+		Vehicle.prototype.resetAcceleration = function () {
+			this.acceleration = new Victor(0, 0);
+		}
+
 		for (var i = 0; i < vehicleCount; i++) {
 			vehicleArr.push(
 				new Vehicle(
@@ -100,8 +93,7 @@
 			}			
 		}
 
-		function singleSeparate(curVehicle) {
-
+		function computeSeparateDesireVelocity(curVehicle) {
 			var sumVelocity = new Victor(0, 0);
 			var count = 0;
 
@@ -121,19 +113,31 @@
 				sumVelocity.div(count);
 				sumVelocity.normalize();
 				sumVelocity.multi(-1);
-				sumVelocity.multi(maxSpeed);	
-
-				curVehicle.velocity = sumVelocity;
+				sumVelocity.multi(maxSeparateSpeed);
 			}
 
-			curVehicle.update();
+			return sumVelocity;
+		}
+
+		function computeSeekDesireVelocity(curVehicle) {
+			var toTargetVictor = mouseLocation.sub(curVehicle.location);
+			var desireVelocity = toTargetVictor.normalize().multi(maxSeekSpeed);
+			return desireVelocity;
 		}
 
 		function draw () {
 			background(175);
 
 			for (var i = 0; i < vehicleCount; i++) {
-				singleSeparate(vehicleArr[i]);
+				var curVehicle = vehicleArr[i];
+
+				var separateVelocity = computeSeparateDesireVelocity(curVehicle);
+				var seekVelocity = computeSeekDesireVelocity(curVehicle);				
+
+				var combineVelocity = seekVelocity.add(separateVelocity);
+				curVehicle.velocity = combineVelocity;
+
+				curVehicle.update();
 			}
 
 			for (var i = 0; i < vehicleCount; i++) {
@@ -145,8 +149,11 @@
 					ellipseRadius
 				);
 			}
+		}	
 
-		}			
+		function mouseMoved() {
+			mouseLocation = new Victor(mouseX, mouseY);
+		}		
 	</script>
 </body>
 </html>

@@ -20,7 +20,7 @@
 
 		var maxSeparateSpeed = 2;
 		var maxSeekSpeed = 1;
-		var safeDistance = 30;
+		var safeDistance = 11;
 
 		var mouseLocation = new Victor(0, 0);
 
@@ -59,7 +59,12 @@
 		}
 
 		Vehicle.prototype.applyForce = function (force) {
-			this.acceleration = force;
+			this.acceleration.add(force);
+			// this.acceleration = force;
+		}
+
+		Vehicle.prototype.resetAcceleration = function () {
+			this.acceleration = new Victor(0, 0);
 		}
 
 		for (var i = 0; i < vehicleCount; i++) {
@@ -108,7 +113,7 @@
 				sumVelocity.div(count);
 				sumVelocity.normalize();
 				sumVelocity.multi(-1);
-				sumVelocity.multi(maxSeparateSpeed);	
+				sumVelocity.multi(maxSeparateSpeed);
 			}
 
 			return sumVelocity;
@@ -125,10 +130,13 @@
 
 			for (var i = 0; i < vehicleCount; i++) {
 				var curVehicle = vehicleArr[i];
+
 				var separateVelocity = computeSeparateDesireVelocity(curVehicle);
-				var seekVelocity = computeSeekDesireVelocity(curVehicle);
+				var seekVelocity = computeSeekDesireVelocity(curVehicle);				
+
 				var combineVelocity = seekVelocity.add(separateVelocity);
 				curVehicle.velocity = combineVelocity;
+
 				curVehicle.update();
 			}
 
