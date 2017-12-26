@@ -1,0 +1,36 @@
+<html>
+
+<head>
+  <script type="text/javascript" src="/js/lib/p5.min.js"></script>
+  <script type="text/javascript" src="/js/lib/victor.js"></script>
+  <script type="text/javascript" src="/js/lib/math.js"></script>
+  <script type="text/javascript" src="/js/lib/gaussian.js"></script>
+
+  <script type="text/javascript" src="/js/victor-util.js"></script>
+</head>
+
+<body>
+  <script>
+
+
+    function display(x, y) {
+      stroke(1000)
+      point(x, y)
+    }
+
+    function setup() {
+      createCanvas(800, 600)
+      background('gray')
+    }
+
+
+    var distribution = gaussian(0, 1);
+    function draw() {
+      console.log(Math.floor(Math.random() * 800))
+      var sample = distribution.ppf(Math.floor(Math.random() * 800));
+      // console.log(sample)
+    }
+  </script>
+</body>
+
+</html>

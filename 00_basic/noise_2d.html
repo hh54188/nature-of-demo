@@ -1,0 +1,58 @@
+<html>
+
+<head>
+  <script type="text/javascript" src="/js/lib/p5.min.js"></script>
+  <script type="text/javascript" src="/js/lib/victor.js"></script>
+  <script type="text/javascript" src="/js/lib/math.js"></script>
+
+  <script type="text/javascript" src="/js/random.js"></script>
+  <script type="text/javascript" src="/js/victor-util.js"></script>
+</head>
+
+<body>
+  <script>
+    const canvasWidth = 800
+    const canvasHeight = 600
+
+
+    function map(value, min1, max1, min2, max2) {
+      /*
+        value / (max1 - min1) = value_unknow / (max2 - min2)
+        value_unknow = (max2 - min) * value  / (max1 - min1)
+      */
+
+      return (max2 - min) * value / (max1 - min1)
+    }
+
+    function drawPoint(x, y) {
+      stroke(2)
+      point(x, y)
+    }
+
+    function setup() {
+      createCanvas(canvasWidth, canvasHeight)
+      loadPixels()
+      let xoff = 0
+      for (let x = 0; x < canvasWidth; x++) {
+        let yoff = 0
+        for (let y = 0; y < canvasHeight; y++) {
+          // stroke('rgba(0, 0, 0, ' + noise(xoff, yoff) + ')')
+          // point(i, j)
+          pixels[x + y * canvasWidth] = color('rgb(0, 0, 0)', noise(xoff, yoff))
+
+          yoff += + 0.01;
+        }
+        xoff += 0.01
+      }
+      updatePixels()
+    }
+
+    function draw() {
+
+    }
+
+
+  </script>
+</body>
+
+</html>
